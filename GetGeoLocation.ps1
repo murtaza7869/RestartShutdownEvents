@@ -1,3 +1,7 @@
+param (
+    [switch]$ShowMap  # Optional parameter to control Google Maps display
+)
+
 # Step 1: Retrieve the public IP address
 $publicIP = (Invoke-RestMethod -Uri "https://api.ipify.org?format=json").ip
 
@@ -28,9 +32,13 @@ try {
     Write-Output "Postal Code: $postal"  
     Write-Output "Timezone: $timezone"  
 
-    # Step 3: Open Google Maps with the latitude and longitude
-    $googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=$loc"
-    Start-Process $googleMapsUrl
+    # Step 3: Open Google Maps with the latitude and longitude if -ShowMap is specified
+    if ($ShowMap) {
+        $googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=$loc"
+        Start-Process $googleMapsUrl
+    } else {
+        Write-Output "Google Maps display is disabled. Use the -ShowMap parameter to enable."
+    }
 
 } catch {
     Write-Output "Failed to retrieve IP-based location information. Check your internet connection or the availability of the IP geolocation service."
